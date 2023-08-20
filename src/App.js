@@ -4,7 +4,6 @@ import "./styles.css";
 import DigitButton from './DigitButton';
 import OperationButton from './OperationButton';
 
-
 export const ACTIONS = {
   ADD_DIGIT: 'add-digit',
   CHOOSE_OPERATION: 'choose-operation',
@@ -13,16 +12,23 @@ export const ACTIONS = {
   EVALUATE: 'evaluate',
 }
 
-
 function reducer(state, {type, payload}){
   switch(type){
     case ACTIONS.ADD_DIGIT:
+      if (payload.digit === "0" && state.currentOperand === "0") {
+        return state
+      }
+      if (payload.digit === "." && state.currentOperand.includes(".")) {
+        return state
+      }
       return{
          ...state,
          currentOperand: `${state.currentOperand || ""}${payload.digit}`,
         }
+        case ACTIONS.CLEAR:
+          return{}
   }
-}
+} 
 
 function App() {
   const [{
@@ -38,7 +44,7 @@ function App() {
          <div className='previous-operand'>{previousOperand}{operation}</div>
          <div className='current-operand'>{currentOperand}</div>
       </div>
-      <button className='span-two'>AC</button>
+      <button className='span-two' onClick={() => dispatch ({type: ACTIONS.CLEAR})}>AC</button>
       <button>DEL</button>
       <OperationButton operation="/" dispatch={dispatch} />
       <DigitButton digit="1" dispatch={dispatch} />
